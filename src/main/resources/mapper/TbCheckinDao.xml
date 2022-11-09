@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.emos.wx.db.dao.TbCheckinDao">
+    <select id="searchTodayCheckin" parameterType="int" resultType="hashmap">
+        select u.name,
+               u.photo,
+               d.dept_name                          as deptName,
+               ck.address,
+               case
+                   when ck.status = 1 then '正常'
+                   when ck.status = 2 then '迟到'
+                   end                              as status,
+               case
+                   when ck.risk = 1 then '低风险'
+                   when ck.risk = 2 then '中风险'
+                   when ck.risk = 3 then '高风险'
+                   end                              as risk,
+               date_format(ck.create_time, "%H:%i") as checkinTime,
+               ck.date
+        from tb_user u
+                 left join tb_dept d on u.dept_id = d.id
+                 left join tb_checkin ck on u.id = ck.user_id
+        where u.id = #{userId}
+          and u.status = 1
+    </select>
+    <!--    查询用户总的签到天数-->
+    <select id="searchCheckinDays" parameterType="int" resultType="long">
+        select distinct count(*) as count
+        from tb_checkin
+        where user_id = #{userId}
+    </select>
+    <!--    一周内用户的考勤情况-->
+    <select id="searchWeekCheckin" parameterType="hashmap" resultType="hashmap">
+        select cast(date as char)         as date,
+               if(status = 1, "正常", "迟到") as status
+        from tb_checkin
+        where user_id = #{userId}
+          and date between #{startDate} and #{endDate}
+    </select>
+    <select id="haveCheckin" parameterType="HashMap" resultType="Integer">
+        SELECT id
+        FROM tb_checkin
+        WHERE user_id = #{userId}
+          AND date = CURRENT_DATE
+          AND create_time BETWEEN #{start} AND #{end}
+        LIMIT 1;
+    </select>
+    <insert id="insert" parameterType="com.example.emos.wx.db.pojo.TbCheckin">
+        INSERT INTO tb_checkin
+        SET user_id = #{userId},
+        <if test="address!=null">
+            address = #{address},
+        </if>
+        <if test="country!=null">
+            country = #{country},
+        </if>
+        <if test="province!=null">
+            province = #{province},
+        </if>
+        <if test="city!=null">
+            city = #{city},
+        </if>
+        <if test="district!=null">
+            district = #{district},
+        </if>
+        status = #{status},
+        <if test="risk!=null">
+            risk = #{risk},
+        </if>
+        date = CURRENT_DATE,
+        create_time = #{createTime}
+    </insert>
+
+</mapper>

@@ -1,0 +1,102 @@
+server:
+  tomcat:
+    uri-encoding: UTF-8
+    threads:
+      max: 200
+      min-spare: 30
+    connection-timeout: 5000ms
+  port: 8080
+  servlet:
+    context-path: /emos-wx-api
+spring:
+  mail:
+    default-encoding: UTF-8
+    host: smtp.aliyun.com
+    username: leachr@aliyun.com
+    password: Wmfsblc0
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/emos?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      username: root
+      password: abc123456
+      initial-size: 8
+      max-active: 16
+      min-idle: 8
+      max-wait: 60000
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password: abc123456
+    jedis:
+      pool:
+        max-active: 1000
+        max-wait: -1ms
+        max-idle: 16
+        min-idle: 8
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: emos
+      authentication-database: admin
+      username: admin
+      password: abc123456
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+  type-aliases-package: com.example.emos.wx.db.pojo
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    root: info
+    com.example.emos.wx.db.dao : warn
+  pattern:
+    console: "%d{HH:mm:ss}  %-5level  %msg%n"
+emos:
+  code: 173783AC507E99C1
+  recieveNotify: http://localhost/emos-wx-api/meeting/recieveNotify # 会议接受审批的地址
+  image-folder: root/image
+  jwt:
+    #密钥
+    secret: abc123456
+    #令牌过期时间（天）
+    expire:  5
+    #令牌缓存时间（天数）
+    cache-expire: 10
+  face:
+#    createFaceModelUrl: http://192.168.85.134/create_face_model # 人脸模型本地的发送地址
+    createFaceModelUrl: http://localhost/create_face_model # 人脸模型云的发送地址地址
+#    checkinUrl: http://192.168.85.134:3000/checkin
+    checkinUrl: http://localhost:3000/checkin
+  email:
+    system: leachr@aliyun.com
+    hr: 1935262743@qq.com
+wx:
+  app-id: wx72075831e46ddcef
+  app-secret: 9c2991a0cf70f3aed009357fa55e893f
+workflow:
+#  url: http://192.168.85.134:9090/emos-workflow
+  url: http://localhost:9090/emos-workflow  # 工作流的地址
+trtc:
+  appid: 1400760383
+  key: d8f86a43f01ef445b1ec88a2343b40beb71f5b20454c7041e0b5b2258300fdc5
+  expire: 86400
+
+
+
+
+
+
+
+
+
