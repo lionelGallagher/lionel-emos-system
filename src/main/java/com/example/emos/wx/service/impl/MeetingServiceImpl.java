@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.css.CSSStyleRule;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -47,7 +46,6 @@ public class MeetingServiceImpl implements MeetingService {
     private String workflow;
     @Resource
     private RedisTemplate redisTemplate;
-
 
     @Override
     public void deleteMeetingById(int id) {

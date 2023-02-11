@@ -20,7 +20,7 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/emos?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
       username: root
-      password: abc123456
+      password: 123456
       initial-size: 8
       max-active: 16
       min-idle: 8
@@ -32,7 +32,6 @@ spring:
     database: 0
     host: localhost
     port: 6379
-    password: abc123456
     jedis:
       pool:
         max-active: 1000
@@ -65,7 +64,7 @@ logging:
 emos:
   code: 173783AC507E99C1
   recieveNotify: http://localhost/emos-wx-api/meeting/recieveNotify # 会议接受审批的地址
-  image-folder: root/image
+  image-folder: D:/image
   jwt:
     #密钥
     secret: abc123456
@@ -74,10 +73,10 @@ emos:
     #令牌缓存时间（天数）
     cache-expire: 10
   face:
-#    createFaceModelUrl: http://192.168.85.134/create_face_model # 人脸模型本地的发送地址
-    createFaceModelUrl: http://localhost/create_face_model # 人脸模型云的发送地址地址
-#    checkinUrl: http://192.168.85.134:3000/checkin
-    checkinUrl: http://localhost:3000/checkin
+    createFaceModelUrl: http://192.168.85.134/create_face_model # 人脸模型本地的发送地址
+#    createFaceModelUrl: http://localhost/create_face_model # 人脸模型云的发送地址地址
+    checkinUrl: http://192.168.85.134:3000/checkin
+#    checkinUrl: http://localhost:3000/checkin
   email:
     system: leachr@aliyun.com
     hr: 1935262743@qq.com
@@ -85,8 +84,8 @@ wx:
   app-id: wx72075831e46ddcef
   app-secret: 9c2991a0cf70f3aed009357fa55e893f
 workflow:
-#  url: http://192.168.85.134:9090/emos-workflow
-  url: http://localhost:9090/emos-workflow  # 工作流的地址
+  url: http://192.168.85.134:9090/emos-workflow
+#  url: http://localhost:9090/emos-workflow  # 工作流的地址
 trtc:
   appid: 1400760383
   key: d8f86a43f01ef445b1ec88a2343b40beb71f5b20454c7041e0b5b2258300fdc5

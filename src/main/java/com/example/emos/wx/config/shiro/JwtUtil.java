@@ -19,6 +19,10 @@ import java.util.Date;
  */
 @Component
 public class JwtUtil {
+    //jwtToken分为
+    // head（type,algo）、
+    // 载荷payload(有效信息)、
+    // signature(algo、signaturemessage)
     @Value("${emos.jwt.secret}")
     private String secret;
     @Value("${emos.jwt.expire}")
