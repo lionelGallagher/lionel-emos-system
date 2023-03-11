@@ -12,6 +12,7 @@ import java.util.Date;
  * @author leach
  * mmbj_18193320486(微信)
  */
+//发的一方
 @Data
 @Document(collection = "message")
 public class MessageEntity implements Serializable {
@@ -24,7 +25,7 @@ public class MessageEntity implements Serializable {
     @Indexed
     private Integer senderId;
 
-    private String senderPhoto="https://static-1258386385.cos.ap-beijing.myqcloud.com/img/System.jpg";
+    private String senderPhoto="https://emos-1311696055.cos.ap-shanghai.myqcloud.com/img/System.jpg";
 
     private String senderName;
 

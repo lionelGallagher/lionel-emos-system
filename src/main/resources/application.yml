@@ -73,18 +73,21 @@ emos:
     #令牌缓存时间（天数）
     cache-expire: 10
   face:
-    createFaceModelUrl: http://192.168.85.134/create_face_model # 人脸模型本地的发送地址
+    icode: 0F52CECCBF8266A9
+    createFaceModelUrl: http://192.168.85.135:3000/create_face_model # 人脸模型本地的发送地址
 #    createFaceModelUrl: http://localhost/create_face_model # 人脸模型云的发送地址地址
-    checkinUrl: http://192.168.85.134:3000/checkin
+    checkinUrl: http://192.168.85.135:3000/checkin     #校验地址
 #    checkinUrl: http://localhost:3000/checkin
+
   email:
     system: leachr@aliyun.com
     hr: 1935262743@qq.com
+# 获取openId
 wx:
   app-id: wx72075831e46ddcef
   app-secret: 9c2991a0cf70f3aed009357fa55e893f
 workflow:
-  url: http://192.168.85.134:9090/emos-workflow
+  url: http://192.168.85.135:9090/emos-workflow
 #  url: http://localhost:9090/emos-workflow  # 工作流的地址
 trtc:
   appid: 1400760383
