@@ -14,7 +14,7 @@ public class RabbitMqConfig {
     public ConnectionFactory connectionFactory() {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         connectionFactory.setPort(5672);
-        connectionFactory.setHost("192.168.85.134");//云1.117.156.217   本地虚拟机 192.168.85.134
+        connectionFactory.setHost("192.168.85.135");//云1.117.156.217   本地虚拟机 192.168.85.134
         return connectionFactory;
 
     }

@@ -34,6 +34,8 @@ public class EmosWxApiApplication {
         SpringApplication.run(EmosWxApiApplication.class, args);
     }
 
+
+    //做一个缓存预热把签到时间的记录保存起来
     @PostConstruct
     public void init() {
         List<SysConfig> sysConfigs = sysConfigDao.selectAllParam();

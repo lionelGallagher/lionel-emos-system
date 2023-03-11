@@ -11,6 +11,8 @@ import java.io.Serializable;
  * @author leach
  * mmbj_18193320486(微信)
  */
+
+//接受的一方进行保存
 @Document(collection = "message_ref")
 @Data
 public class MessageRefEntity implements Serializable {

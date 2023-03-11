@@ -42,7 +42,7 @@ public class OAuth2Realm extends AuthorizingRealm {
             new LockedAccountException("该账户已经被冻结，请联系管理员");
         }
             //往对象里面添加用户信息，token字符串
-            SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user,token , getName());
+            SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user,token ,getName());
         return info;
     }
 

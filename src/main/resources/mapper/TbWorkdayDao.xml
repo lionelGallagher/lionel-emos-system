@@ -3,13 +3,13 @@
 <mapper namespace="com.example.emos.wx.db.dao.TbWorkdayDao">
     <select id="searchTodayIsWorkdays" resultType="Integer">
         SELECT id
-        FROM tb_holidays
+        FROM tb_workday
         WHERE date = CURRENT_DATE
         LIMIT 1;
     </select>
     <select id="searchWorkdayInRange" parameterType="hashmap" resultType="string">
         SELECT date
-        FROM tb_holidays
+        FROM tb_workday
         WHERE date between #{startDate} and #{endDate}
     </select>
 </mapper>

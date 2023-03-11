@@ -87,7 +87,7 @@ public class MessageDao {
                 Aggregation.sort(Sort.by(Sort.Direction.DESC, "sendTime")),
                 //页起始位置
                 Aggregation.skip(start),
-                //页大小
+                //条数
                 Aggregation.limit(length)
         );
         AggregationResults<HashMap> results = mongoTemplate.aggregate(aggregation, "message", HashMap.class);

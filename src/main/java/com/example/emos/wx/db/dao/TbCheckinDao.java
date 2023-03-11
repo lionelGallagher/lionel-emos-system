@@ -12,6 +12,11 @@ public interface TbCheckinDao {
 
     void insert(TbCheckin tbCheckin);
 
+
+
+
+
+
     //每天的签到记录
     HashMap searchTodayCheckin(int userId);
 

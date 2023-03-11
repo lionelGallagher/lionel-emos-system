@@ -27,7 +27,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author leach
  * mmbj_18193320486(微信)
- * 具体流程是 拿到前端传过来的邀请码判断 再通过限时的code获取openId 插入 再通过唯一的openId来获取 userId生成token进行保存
+ * 具体流程是 拿到前端传过来的邀请码判断
+ * 再通过限时的code获取openId
+ * 插入 再通过唯一的openId来获取
+ * userId生成token进行保存
  */
 @Api("测试注册接口")
 @RestController

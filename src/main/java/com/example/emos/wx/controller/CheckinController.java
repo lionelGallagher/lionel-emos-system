@@ -56,7 +56,7 @@ public class CheckinController {
 
     @PostMapping("/checkin")
     @ApiOperation("签到")
-    public R checkin(@RequestHeader("token") String token, @RequestParam MultipartFile file, @Valid CheckinForm checkinForm) {
+    public R checkin(@RequestHeader("token") String token, @RequestParam("photo") MultipartFile file, @Valid CheckinForm checkinForm) {
         if (file == null) {
             return R.error("没有文件上传");
         }
@@ -89,7 +89,7 @@ public class CheckinController {
 
     @PostMapping("/creatFaceModel")
     @ApiOperation("创建人脸模型")
-    public R creatFaceModel(@RequestHeader("token") String token, @RequestParam MultipartFile file) {
+    public R creatFaceModel(@RequestHeader("token") String token, @RequestParam("photo") MultipartFile file) {
         if (file == null) {
             return R.error("没有文件上传");
         }
@@ -122,10 +122,12 @@ public class CheckinController {
          * 每天的记录的返回
          */
         int userId = jwtUtil.getUserId(token);
+        //获取用户入职日期
         DateTime userHiredate = DateUtil.parse(userService.searchUserHiredate(userId));
+        //每天的签到记录
         HashMap map = checkinService.searchTodayCheckin(userId);
         map.put("attendanceTime", systemConstants.getAttendanceTime());
-        map.put("closingTime", systemConstants.getClosingTime());
+        map.put("closingTime", systemConstants.getAttendanceEndTime());
         //总天数
         map.put("checkinDays", checkinService.searchCheckinDays(userId));
         //判断日期是否在用户入职之前
@@ -137,6 +139,7 @@ public class CheckinController {
         HashMap param = new HashMap();
         //往里差三个数就可查到本周date and status
         param.put("userId", userId);
+
         param.put("endDate", endDate);
         param.put("startDate", startDate);
         ArrayList<HashMap> list = checkinService.searchWeekCheckin(param);
@@ -164,8 +167,8 @@ public class CheckinController {
         DateTime endDate = DateUtil.endOfMonth(startDate);
         HashMap param = new HashMap();
         param.put("userId",userId);
-        param.put("startDate",startDate);
-        param.put("endDate",endDate);
+        param.put("startDate",startDate.toString());
+        param.put("endDate",endDate.toString());
         ArrayList<HashMap> list = checkinService.searchMonthCheckin(param);
         int sum_1=0, sum_2=0, sum_3=0;
 

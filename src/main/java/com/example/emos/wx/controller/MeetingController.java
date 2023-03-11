@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,7 +38,6 @@ public class MeetingController {
     private JwtUtil jwtUtil;
     @Resource
     private MeetingService meetingService;
-
 
     @PostMapping("/searchMessageByPage")
     @ApiOperation("获取会议分页消息")

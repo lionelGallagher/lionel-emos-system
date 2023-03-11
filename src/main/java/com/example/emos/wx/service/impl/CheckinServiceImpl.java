@@ -60,6 +60,8 @@ public class CheckinServiceImpl implements CheckinService {
     private String checkinUrl;
     @Value("${emos.email.hr}")
     private String hrEmail;
+    @Value("${emos.face.icode}")
+    private String icode;
 
     @Resource
     private EmailTask emailTask;
@@ -72,6 +74,7 @@ public class CheckinServiceImpl implements CheckinService {
         boolean bool_1 = tbHolidaysDao.searchTodayIsHolidays() != null ? true : false;
         boolean bool_2 = tbWorkdayDao.searchTodayIsWorkdays() != null ? true : false;
         String type = "工作日";
+//        DateUtil.date()  dateTime类型
         if (DateUtil.date().isWeekend()) {
             type = "节假日";
         }
@@ -87,8 +90,8 @@ public class CheckinServiceImpl implements CheckinService {
             DateTime now = DateUtil.date();
             String start = DateUtil.today() + " " + systemConstants.getAttendanceStartTime();
             String end = DateUtil.today() + " " + systemConstants.getAttendanceEndTime();
-            DateTime attendStart = DateUtil.parseDate(start);
-            DateTime attendEnd = DateUtil.parseDate(end);
+            DateTime attendStart = DateUtil.parse(start);
+            DateTime attendEnd = DateUtil.parse(end);
             if (now.before(attendStart)) {
                 return "时间过早，不允许打卡";
             } else if (now.after(attendEnd)) {
@@ -100,7 +103,7 @@ public class CheckinServiceImpl implements CheckinService {
                 map.put("start", start);
                 map.put("end", end);
                 boolean bool = tbCheckinDao.haveCheckin(map) != null ? true : false;
-                return bool ? "可以考勤" : "已经考勤，不用重复考勤";
+                return bool ? "已经考勤，不用重复考勤" : "可以考勤";
             }
         }
 
@@ -110,8 +113,8 @@ public class CheckinServiceImpl implements CheckinService {
     public void checkin(HashMap param) {
         //判断一下 签到时间
         Date date = DateUtil.date();
-        Date date1 = DateUtil.parseDate(DateUtil.today() + "" + systemConstants.getAttendanceTime());
-        Date date2 = DateUtil.parseDate(DateUtil.today() + "" + systemConstants.getAttendanceEndTime());
+        Date date1 = DateUtil.parse(DateUtil.today() + " " + systemConstants.getAttendanceTime());
+        Date date2 = DateUtil.parse(DateUtil.today() + " " + systemConstants.getAttendanceEndTime());
         int status = 1;
         if (date.compareTo(date1) < 0) {
             status = 1;
@@ -128,6 +131,7 @@ public class CheckinServiceImpl implements CheckinService {
         } else {//执行py查询逻辑
             String path = (String) param.get("path");
             HttpRequest request = HttpUtil.createPost(checkinUrl);
+            request.form("code", icode);
             request.form("photo", FileUtil.file(path), "targetModel", faceModel);
             HttpResponse response = request.execute();
             if (response.getStatus() != 200) {
@@ -138,7 +142,7 @@ public class CheckinServiceImpl implements CheckinService {
                 throw new EmosException("人脸识别异常");
             } else if ("False".equals(body)) {
                 throw new EmosException("签到无效，非本人签到");
-            } else if ("True".equals(body)) {
+            } else if ("执行错误".equals(body)) {
 
 
                 //检测当地疫情
@@ -149,17 +153,16 @@ public class CheckinServiceImpl implements CheckinService {
                     String code = tbCityDao.searchCode(city);
                     //查询风险地区
                     try {
+
                         String url = "http://m." + code + ".bendibao.com/news/yqdengji/?qu=" + district;
                         Document document = Jsoup.connect(url).get();
-                        Element div = document.getElementById("10617");
-                        if (div.hasText()) {
-                            Elements allElements = div.getAllElements();
-                            Element element = allElements.get(1);
-                            String result = element.select("p:").text();
-                            if ("高风险".equals(result)) {
+                        Element element = document.getElementsByClass("cls1").get(0);
+                        for (Element child : element.children()) {
+                            String riskRegion = child.getElementsByClass("cls13").get(0).text();
+                            String riskType = child.getElementsByClass("cls12").get(0).text();
+                            if ("高风险".equals(riskType)) {
                                 risk = 3;
-//                                发送告警邮件
-
+                                // TODO 发送告警邮件
                                 HashMap<String, String> map = tbUserDao.searchNameAndDept(userId);
                                 String name = map.get("name");
                                 String deptName = map.get("dept_name");
@@ -173,30 +176,60 @@ public class CheckinServiceImpl implements CheckinService {
                                         "，属于新冠疫情高风险地区，请及时与该员工联系，核实情况！");
                                 emailTask.sendAsync(message);
 
-
-                            }
-                            if ("中风险".equals(result)) {
+                                break;
+                            } else if ("中风险".equals(riskType)) {
                                 risk = 2;
                             }
                         }
+
+
+
+//
+//                        Document document = Jsoup.connect(url).get();
+//                        Element div = document.getElementById("10617");
+//                        if (div.hasText()) {
+//                            Elements allElements = div.getAllElements();
+//                            Element element = allElements.get(1);
+//                            String result = element.select("p:").text();
+//                            if ("高风险".equals(result)) {
+//                                risk = 3;
+////                                发送告警邮件
+//
+//                                HashMap<String, String> map = tbUserDao.searchNameAndDept(userId);
+//                                String name = map.get("name");
+//                                String deptName = map.get("dept_name");
+//                                deptName = deptName != null ? deptName : "";
+//                                SimpleMailMessage message = new SimpleMailMessage();
+//                                message.setTo(hrEmail);
+//                                message.setSubject("员工" + name + "身处高风险疫情地区警告");
+//                                message.setText(deptName + "员工" + name + "，" +
+//                                        DateUtil.format(new Date(), "yyyy年MM月dd日") +
+//                                        "处于" + address +
+//                                        "，属于新冠疫情高风险地区，请及时与该员工联系，核实情况！");
+//                                emailTask.sendAsync(message);
+//
+//
+//                            }
+//                            if ("中风险".equals(result)) {
+//                                risk = 2;
+//                            }
+//                        }
                     } catch (Exception e) {
                         log.error("检测风险区失败");
-                        throw new EmosException("检测风险区失败");
+                        //插入数据
+                        TbCheckin tbCheckin = new TbCheckin();
+                        tbCheckin.setUserId(userId);
+                        tbCheckin.setCity(city);
+                        tbCheckin.setAddress(address);
+                        tbCheckin.setCountry(country);
+                        tbCheckin.setDistrict(district);
+                        tbCheckin.setProvince(province);
+                        tbCheckin.setRisk(risk);
+                        tbCheckin.setStatus((byte) status);
+                        tbCheckin.setCreateTime(date);
+                        tbCheckinDao.insert(tbCheckin);
                     }
                 }
-                //插入数据
-                TbCheckin tbCheckin = new TbCheckin();
-                tbCheckin.setUserId(userId);
-                tbCheckin.setCity(city);
-                tbCheckin.setAddress(address);
-                tbCheckin.setCountry(country);
-                tbCheckin.setDistrict(district);
-                tbCheckin.setProvince(province);
-                tbCheckin.setRisk(risk);
-                tbCheckin.setStatus((byte) status);
-                tbCheckin.setCreateTime(date);
-                tbCheckinDao.insert(tbCheckin);
-
             }
         }
     }
@@ -206,6 +239,7 @@ public class CheckinServiceImpl implements CheckinService {
         //py创建人脸数据 封装给数据库
 
         HttpRequest request = HttpUtil.createPost(createFaceModelUrl);
+        request.form("code", icode);
         request.form("photo", FileUtil.file(path));
         HttpResponse response = request.execute();
         if (response.getStatus() != 200) {
@@ -221,13 +255,13 @@ public class CheckinServiceImpl implements CheckinService {
             tbFaceModelDao.insertFaceModel(tbFaceModel);
         }
     }
-
+    //用户每天签到记录
     @Override
     public HashMap searchTodayCheckin(int userId) {
         return tbCheckinDao.searchTodayCheckin(userId);
 
     }
-
+    //签到天数
     @Override
     public long searchCheckinDays(int userId) {
         return tbCheckinDao.searchCheckinDays(userId);

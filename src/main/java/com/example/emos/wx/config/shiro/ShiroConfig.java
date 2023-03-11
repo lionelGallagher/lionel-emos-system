@@ -27,11 +27,14 @@ public class ShiroConfig {
         defaultWebSecurityManager.setRememberMeManager(null);
         return defaultWebSecurityManager;
     }
+
     @Bean
     //将filter封装在ShiroFilterFactoryBean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager, OAuth2Filter oAuth2Filter) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
+
+        //过滤
         HashMap<String, Filter> filter = new HashMap<>();
         filter.put("oauth2", oAuth2Filter);
         shiroFilterFactoryBean.setFilters(filter);
@@ -53,7 +56,7 @@ public class ShiroConfig {
         filterHashMap.put("/**", "oauth2");
         filterHashMap.put("/meeting/recieveNotify", "anon");
 
-        //这里设置的拦截器分为需要过滤与不过滤
+        //这里设置的拦截器分为需要不过滤
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterHashMap);
         return shiroFilterFactoryBean;
 
@@ -65,6 +68,7 @@ public class ShiroConfig {
         return new LifecycleBeanPostProcessor();
     }
 
+    //角色权限封装类
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();

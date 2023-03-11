@@ -65,8 +65,8 @@ public class SwaggerConfig {
         AuthorizationScope[] scopes = {authorizationScope};
 
         //存储令牌 和作用域
-        SecurityReference securityReference = new SecurityReference("token", scopes);
         ArrayList<SecurityReference> refList = new ArrayList<>();
+        SecurityReference securityReference = new SecurityReference("token", scopes);
         refList.add(securityReference);
 
         SecurityContext ctxList = SecurityContext.builder().securityReferences(refList).build();

@@ -71,7 +71,7 @@ public class MessageController {
     public R refreshMessage(@RequestHeader("token") String token  ){
         int userId = jwtUtil.getUserId(token);
         //接受消息
-        int i=messageTask.receiveAsync(userId+"");
+        messageTask.receiveAsync(userId+"");
         //查询消息
         long lastRows = messageService.searchLastCount(userId);
         //查询未读消息

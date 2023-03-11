@@ -84,9 +84,11 @@ public class MessageTask {
                     AMQP.BasicProperties props = response.getProps();
                     Map<String, Object> headers = props.getHeaders();
                     String messageId = headers.get("messageId").toString();
+
                     byte[] body = response.getBody();
                     String message = new String(body);
                     log.debug("从mq接受到的消息:" + message);
+
                     MessageRefEntity entity = new MessageRefEntity();
                     entity.setMessageId(messageId);
                     entity.setReceiverId(Integer.parseInt(topic));

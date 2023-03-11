@@ -10,6 +10,7 @@ import com.example.emos.wx.db.pojo.TbUser;
 import com.example.emos.wx.exception.EmosException;
 import com.example.emos.wx.service.UserService;
 import com.example.emos.wx.task.MessageTask;
+import com.google.common.util.concurrent.AtomicDouble;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,11 +88,12 @@ public class UserServiceImpl implements UserService {
                 param.put("hiredate", new Date());
                 userDao.insert(param);
                 Integer id = userDao.searchIdByOpenId(openId);
+
                 MessageEntity messageEntity = new MessageEntity();
                 messageEntity.setSendTime(new Date());
                 messageEntity.setMsg("欢迎注册超级管理员，请及时更新您的员工信息");
                 messageEntity.setSenderId(0);
-                messageEntity.setSenderName("系统消息");
+                messageEntity.setSenderName("Leach系统消息");
                 messageEntity.setUuid(IdUtil.simpleUUID());
                 messageTask.sendAsync(id + "", messageEntity);
                 return id;
@@ -99,12 +101,10 @@ public class UserServiceImpl implements UserService {
                 throw new EmosException("无法绑定超级管理员账号");
             }
         } else {
-            //否则就是普通用户
-
+            // FGTODO:  否则就是普通用户
         }
         return 0;
     }
-
     @Override
     public Set<String> searchUserPermissions(int userId) {
         Set<String> permissions = userDao.searchUserPermissions(userId);
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
             throw new EmosException("账户不存在");
         }
         //接受到的消息条数
-//        int i = messageTask.receiveAsync(userId + "");
+        messageTask.receiveAsync(userId + "");
         return userId;
     }
 

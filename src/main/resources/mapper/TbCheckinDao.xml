@@ -31,12 +31,13 @@
     </select>
     <!--    一周内用户的考勤情况-->
     <select id="searchWeekCheckin" parameterType="hashmap" resultType="hashmap">
-        select cast(date as char)         as date,
+        select cast(date as char)         as `date`,
                if(status = 1, "正常", "迟到") as status
         from tb_checkin
         where user_id = #{userId}
           and date between #{startDate} and #{endDate}
     </select>
+<!--    查询当天的签到人-->
     <select id="haveCheckin" parameterType="HashMap" resultType="Integer">
         SELECT id
         FROM tb_checkin
